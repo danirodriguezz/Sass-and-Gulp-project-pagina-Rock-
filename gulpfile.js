@@ -13,7 +13,6 @@ function css (done) {
         .pipe( plumber() )
         .pipe( sass() ) //Compilarlo
         .pipe( dest("build/css")); //Almacenar en el disco duro
-
     done();// Callback que avisa a gulp cuando llegamos al final
 }
 
@@ -21,7 +20,6 @@ function imagenes(done) {
     const opciones = {
         optimizationLevel: 3
     }
-
     src("src/img/**/*.{png,jpg}")
     .pipe(cache(imagemin(opciones)))
     .pipe(dest("build/img"))
@@ -29,7 +27,7 @@ function imagenes(done) {
 
 }
 
-function versionWebp(done) { //Funcion para convetir las imagenes a Webp
+function versionWebp( done ) { //Funcion para convetir las imagenes a Webp
     const opciones = {
         quality: 50
     };
@@ -40,7 +38,7 @@ function versionWebp(done) { //Funcion para convetir las imagenes a Webp
     done();
 }
 
-function versionAvif(done) { //Funcion para convetir las imagenes a Webp
+function versionAvif( done ) { //Funcion para convetir las imagenes a Webp
     const opciones = {
         quality: 50
     };
@@ -51,15 +49,22 @@ function versionAvif(done) { //Funcion para convetir las imagenes a Webp
     done();
 }
 
+function javascript( done ) {
+    src("src/js/**/*.js")
+    .pipe(dest("build/js"));
+    done()
+}
+
 function dev(done) {
     watch("src/scss/**/*.scss", css);
-
+    watch("src/js/**/*.js", javascript);
     done();
 }
 
 exports.css = css;
+exports.js = javascript;
 exports.imagenes = imagenes;
 exports.versionWebp = versionWebp;
 exports.versionAvif = versionAvif;
 
-exports.dev = parallel(imagenes, versionWebp, versionAvif, dev);
+exports.dev = parallel(imagenes, versionWebp, versionAvif, javascript, dev);
